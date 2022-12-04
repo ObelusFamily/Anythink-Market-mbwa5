@@ -20,6 +20,8 @@ const tokenPlugin = (req) => {
   }
 };
 
+let searchTitleTerm = "";
+
 const requests = {
   del: (url) =>
     superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
@@ -52,16 +54,24 @@ const Tags = {
 
 const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
 const omitSlug = (item) => Object.assign({}, item, { slug: undefined });
+const title = () =>
+  searchTitleTerm && searchTitleTerm.length > 2
+    ? `title=${encode(searchTitleTerm)}`
+    : "";
 const Items = {
-  all: (page) => requests.get(`/items?${limit(1000, page)}`),
+  all: (page) => requests.get(`/items?${limit(1000, page)}&${title()}`),
   bySeller: (seller, page) =>
-    requests.get(`/items?seller=${encode(seller)}&${limit(500, page)}`),
+    requests.get(
+      `/items?seller=${encode(seller)}&${limit(500, page)}&${title()}`
+    ),
   byTag: (tag, page) =>
-    requests.get(`/items?tag=${encode(tag)}&${limit(1000, page)}`),
+    requests.get(`/items?tag=${encode(tag)}&${limit(1000, page)}&${title()}`),
   del: (slug) => requests.del(`/items/${slug}`),
   favorite: (slug) => requests.post(`/items/${slug}/favorite`),
   favoritedBy: (seller, page) =>
-    requests.get(`/items?favorited=${encode(seller)}&${limit(500, page)}`),
+    requests.get(
+      `/items?favorited=${encode(seller)}&${limit(500, page)}&${title()}`
+    ),
   feed: () => requests.get("/items/feed?limit=10&offset=0"),
   get: (slug) => requests.get(`/items/${slug}`),
   unfavorite: (slug) => requests.del(`/items/${slug}/favorite`),
@@ -92,6 +102,9 @@ const agentObj = {
   Tags,
   setToken: (_token) => {
     token = _token;
+  },
+  setTitleSearchTerm: (_searchTerm) => {
+    searchTitleTerm = _searchTerm;
   },
 };
 
