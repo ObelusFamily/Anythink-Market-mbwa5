@@ -11,6 +11,7 @@ import {
   PROFILE_FAVORITES_PAGE_LOADED,
   PROFILE_FAVORITES_PAGE_UNLOADED,
   APPLY_TITLE_SEARCH,
+  SHOW_TITLE_SEARCH,
 } from "../constants/actionTypes";
 
 const reducer = (state = {}, action) => {
@@ -53,6 +54,11 @@ const reducer = (state = {}, action) => {
         items: action.payload.items,
         itemsCount: action.payload.itemsCount,
         searchTitleTerm: action.searchTitleTerm,
+      };
+    case SHOW_TITLE_SEARCH:
+      return {
+        ...state,
+        showTitleSearchBar: true,
       };
     case HOME_PAGE_LOADED:
       return {
