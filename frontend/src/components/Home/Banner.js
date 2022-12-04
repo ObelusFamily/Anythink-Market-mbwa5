@@ -1,24 +1,23 @@
 import React from "react";
 import logo from "../../imgs/logo.png";
 import { connect } from "react-redux";
-// import agent from "../../agent";
 import { APPLY_TITLE_SEARCH } from "../../constants/actionTypes";
 import agent from "../../agent";
 
 const mapDispatchToProps = (dispatch) => ({
-  onSetTitleSearch: (payload) =>
-    dispatch({ type: APPLY_TITLE_SEARCH, payload }),
+  onSetTitleSearch: (searchTitleTerm, payload) =>
+    dispatch({ type: APPLY_TITLE_SEARCH, searchTitleTerm, payload }),
 });
 
 const Banner = (props) => {
   const setTitleSearch = (search) => {
     agent.setTitleSearchTerm(search);
-    props.onSetTitleSearch(agent.Items.all());
+    props.onSetTitleSearch(search, agent.Items.all());
   };
 
   const onChange = (ev) => {
     ev.preventDefault();
-    if (ev.target.value && ev.target.value.length > 2) {
+    if (ev.target.value.length === 0 || ev.target.value.length > 2) {
       setTitleSearch(ev.target.value);
     }
   };
@@ -34,7 +33,7 @@ const Banner = (props) => {
             type="text"
             className="mx-2"
             onChange={onChange}
-            placeholder={"What is it you truly desire?"}
+            placeholder="What is it you truly desire?"
           ></input>
           <span> the cool stuff.</span>
         </div>
@@ -43,5 +42,4 @@ const Banner = (props) => {
   );
 };
 
-// export default Banner;
-export default connect(mapDispatchToProps)(Banner);
+export default connect(null, mapDispatchToProps)(Banner);
